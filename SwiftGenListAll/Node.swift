@@ -11,6 +11,7 @@ class Node {
     var value: String //swiftgenvalue
     var localizableKey: String?
     var rswiftValue: String?
+    var visited: Bool = false
 
     private(set) var children: [Node]
     weak var parent: Node?
@@ -47,43 +48,34 @@ class Node {
             traverse(child, newText)
         }
     }
+
+    static func unvisit(_ node: Node) {
+        node.visited = false
+        for child in node.children {
+            unvisit(child)
+        }
+    }
 }
 
 
 extension Node: Equatable {
     static func ==(lhs: Node, rhs: Node) -> Bool {
-            lhs.value == rhs.value && lhs.children == rhs.children
-        }
-    func find(_ value: String) -> Node? {
-            if self.value == value {
-                return self
-            }
+        lhs.value == rhs.value && lhs.children == rhs.children
+    }
 
-            for child in children {
-                if let match = child.find(value) {
-                    return match
-                }
-            }
-
-            return nil
+    func find(key: String, rswift: String) {
+        for child in children {
+            child.find(key: key, rswift: rswift)
         }
-
-    func find(localizableKey: String) -> Node? {
-        if self.localizableKey == localizableKey {
-                return self
-            }
-            for child in children {
-                if let match = child.find(localizableKey: localizableKey) {
-                    return match
-                }
-            }
-            return nil
+        if self.localizableKey == key {
+            self.rswiftValue = rswift
         }
+    }
 }
 
 extension Node: Hashable {
     func hash(into hasher: inout Hasher) {
-            hasher.combine(value)
-            hasher.combine(children)
-        }
+        hasher.combine(value)
+        hasher.combine(children)
+    }
 }

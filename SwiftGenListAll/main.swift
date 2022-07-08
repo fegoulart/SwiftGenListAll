@@ -179,9 +179,12 @@ while beforeEndOfFile(rGeneratedBytesRead) {
         continue
     }
 
-    if let node = rootNode?.find(localizableKey: key) {
-        node.rswiftValue = rswift
+    guard let root = rootNode else {
+        moveToNextLine()
+        continue
     }
+
+    root.find(key: key, rswift: rswift)
 
     moveToNextLine()
 
@@ -189,6 +192,5 @@ while beforeEndOfFile(rGeneratedBytesRead) {
         rGeneratedBytesRead = getline(&rGeneratedLineByteArrayPointer, &rGeneratedLineCap, rGeneratedFilePointer)
     }
 }
-
 
 Node.traverse(rootNode!)
