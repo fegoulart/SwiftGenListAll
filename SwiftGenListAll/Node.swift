@@ -12,6 +12,7 @@ class Node {
     var localizableKey: String?
     var rswiftValue: String?
     var visited: Bool = false
+    var isInterpolationFunc: Bool = false
 
     private(set) var children: [Node]
     weak var parent: Node?
@@ -41,6 +42,10 @@ class Node {
         guard !node.children.isEmpty else { // is leaf
             let key: String = node.localizableKey ?? ""
             let rswift: String = node.rswiftValue ?? ""
+            guard !node.isInterpolationFunc else {
+                print("\(key);R.string.localizable.\(rswift);\(newText)")
+                return
+            }
             print("\(key);R.string.localizable.\(rswift)();\(newText)")
             return
         }
@@ -63,9 +68,9 @@ extension Node: Equatable {
         lhs.value == rhs.value && lhs.children == rhs.children
     }
 
-    func find(key: String, rswift: String) {
+    func setRswiftValue(key: String, rswift: String) {
         for child in children {
-            child.find(key: key, rswift: rswift)
+            child.setRswiftValue(key: key, rswift: rswift)
         }
         if self.localizableKey == key {
             self.rswiftValue = rswift

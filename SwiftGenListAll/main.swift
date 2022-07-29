@@ -67,6 +67,7 @@ while beforeEndOfFile(bytesRead) {
         let localizedKey = extractFuncLocalizableKey(lineAsString)
         if let token = localizedKey {
             previousNode?.localizableKey = token
+            previousNode?.isInterpolationFunc = true
         }
         mustCheckFuncLocalizableKey = false
         moveToNextLine()
@@ -184,7 +185,7 @@ while beforeEndOfFile(rGeneratedBytesRead) {
         continue
     }
 
-    root.find(key: key, rswift: rswift)
+    root.setRswiftValue(key: key, rswift: rswift)
 
     moveToNextLine()
 
